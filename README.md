@@ -31,7 +31,7 @@ C로 제작한 소켓통신 프로젝트.
 - Oracle VM VirtualBox, Fedora Linux 설치 후 실행
 - 터미널 접속해서 디렉토리 생성(tcp_server/tcp_client/udp_server/udp_client/tmp/mysocket)
 - vi 편집기를 이용하여 tcp & udp 서비 및 클라이언트 부분 코딩
-- 저장 후 종료(:wq) 후 gcc 명렁어로 컴파일
+- 저장 후 종료하고 gcc 명령어를 이용하여 컴파일
 - ./a.out 입력하여 실행
   
 ## 개발 환경
