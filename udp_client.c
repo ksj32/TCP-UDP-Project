@@ -1,4 +1,4 @@
-/* UDP Å¬¶óÀÌ¾ğÆ®(udp_client) */
+/* UDP í´ë¼ì´ì–¸íŠ¸(udp_client) */
 
 #include <stdio.h>
 #include <string.h>
@@ -7,54 +7,54 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#define PORT 7777   // ¼­¹öÀÇ Æ÷Æ® ¹øÈ£ 
-#define BUFSIZE 1024 //¹®ÀÚ ¹è¿­ Å©±â »ó¼ö·Î ¼±¾ğ
-// argv[1]Àº ¼ö¿Í Á¡ Ç¥±âÀÇ IP ÁÖ¼Ò
+#define PORT 7777   // ì„œë²„ì˜ í¬íŠ¸ ë²ˆí˜¸ 
+#define BUFSIZE 1024 //ë¬¸ì ë°°ì—´ í¬ê¸° ìƒìˆ˜ë¡œ ì„ ì–¸
+// argv[1]ì€ ìˆ˜ì™€ ì  í‘œê¸°ì˜ IP ì£¼ì†Œ
 main(int argc, char *argv[])
 {    
 	int sockfd;
     struct sockaddr_in servAddr;
-//¼Û½Å, ¼ö½ÅÇÒ ¸Ş½ÃÁö ÀúÀåÇÏ´Â ¹®ÀÚ ¹è¿­
+//ì†¡ì‹ , ìˆ˜ì‹ í•  ë©”ì‹œì§€ ì €ì¥í•˜ëŠ” ë¬¸ì ë°°ì—´
     char sendBuffer[BUFSIZE], recvBuffer[BUFSIZE]; 
-//¼Û½Å, ¼ö½ÅÇÒ ¸Ş½ÃÁö Å©±â ÀúÀåÇÏ´Â º¯¼ö
+//ì†¡ì‹ , ìˆ˜ì‹ í•  ë©”ì‹œì§€ í¬ê¸° ì €ì¥í•˜ëŠ” ë³€ìˆ˜
     int recvLen, servLen;
-  /*argc=ÀÎÀÚ ¼ö, ÀÎÀÚ ¼ö°¡ 2°³°¡ ¾Æ´Ï¸é ¾Æ·¡¿Í °°Àº ¹æ½ÄÀ¸·Î »ç¿ëÇÏ¶ó°í ¿¹¹® Ãâ·Â*/
+  /*argc=ì¸ì ìˆ˜, ì¸ì ìˆ˜ê°€ 2ê°œê°€ ì•„ë‹ˆë©´ ì•„ë˜ì™€ ê°™ì€ ë°©ì‹ìœ¼ë¡œ ì‚¬ìš©í•˜ë¼ê³  ì˜ˆë¬¸ ì¶œë ¥*/
     if(argc != 2) {
        fprintf(stderr, "Usage: %s IP_address\n", argv[0]);
        exit(1);
     }
-    /*AF_INET ÇÁ·ÎÅäÄİ »ç¿ë, SOCK_DGRAM(UDP) ¹æ½ÄÀ¸·Î µ¥ÀÌÅÍ Àü¼Û, 0Àº ¿î¿µÃ¼Á¦°¡ ÀÚµ¿À¸·Î ¼ÒÄÏ Å¸ÀÔ¿¡ ¸Â°Ô ¼³Á¤ÇÏ°Ú´Ù´Â ¶æ. ÀÎÅÍ³İÀ¸·Î ¿¬°áµÈ ÇÁ·Î¼¼½º °£¿¡ Åë½ÅÇÏ°í UDP ¹æ¹ıÀ» ÀÌ¿ëÇÏ´Â ¼ÒÄÏÀ» »ı¼º 
+    /*AF_INET í”„ë¡œí† ì½œ ì‚¬ìš©, SOCK_DGRAM(UDP) ë°©ì‹ìœ¼ë¡œ ë°ì´í„° ì „ì†¡, 0ì€ ìš´ì˜ì²´ì œê°€ ìë™ìœ¼ë¡œ ì†Œì¼“ íƒ€ì…ì— ë§ê²Œ ì„¤ì •í•˜ê² ë‹¤ëŠ” ëœ». ì¸í„°ë„·ìœ¼ë¡œ ì—°ê²°ëœ í”„ë¡œì„¸ìŠ¤ ê°„ì— í†µì‹ í•˜ê³  UDP ë°©ë²•ì„ ì´ìš©í•˜ëŠ” ì†Œì¼“ì„ ìƒì„± 
 */
     if((sockfd=socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
        perror("sock failed");
        exit(1);
     }
-    memset(&servAddr, 0, sizeof(servAddr)); //¸Ş¸ğ¸® Å©±â ÁöÁ¤
-    // servAddr¿¡ IP ÁÖ¼Ò¿Í Æ÷Æ® ¹øÈ£ ÀúÀå 
+    memset(&servAddr, 0, sizeof(servAddr)); //ë©”ëª¨ë¦¬ í¬ê¸° ì§€ì •
+    // servAddrì— IP ì£¼ì†Œì™€ í¬íŠ¸ ë²ˆí˜¸ ì €ì¥ 
     servAddr.sin_family = AF_INET;
     servAddr.sin_addr.s_addr = inet_addr(argv[1]);
     servAddr.sin_port = htons(PORT);
-//Ctrl+c·Î Á¤ÁöÇÒ ¶§±îÁö ¹«ÇÑ ¹İº¹
+//Ctrl+cë¡œ ì •ì§€í•  ë•Œê¹Œì§€ ë¬´í•œ ë°˜ë³µ
     while(1) {
-	// ¼Û½ÅÇÒ ¹®ÀÚ¿­ ÀÔ·Â ¹Ş¾Æ sendBuffer¿¡ ÀúÀå
+	// ì†¡ì‹ í•  ë¬¸ìì—´ ì…ë ¥ ë°›ì•„ sendBufferì— ì €ì¥
        printf("Input Message : ");
-       fgets(sendBuffer, BUFSIZE, stdin); //stdinÀº Ç¥ÁØ ÀÔ·Â ¹öÆÛ
+       fgets(sendBuffer, BUFSIZE, stdin); //stdinì€ í‘œì¤€ ì…ë ¥ ë²„í¼
        
-       /* sockfd ¼ÒÄÏÀ» ÅëÇØ servAddrÀ» ÁÖ¼Ò·Î °®´Â ¼­¹ö¿¡°Ô µ¥ÀÌÅÍ¸¦ º¸³¿(sendto ÇÔ¼ö¸¦ »ç¿ëÇØ¼­). sendto() ½Ã½ºÅÛ Äİ È£Ãâ*/
+       /* sockfd ì†Œì¼“ì„ í†µí•´ servAddrì„ ì£¼ì†Œë¡œ ê°–ëŠ” ì„œë²„ì—ê²Œ ë°ì´í„°ë¥¼ ë³´ëƒ„(sendto í•¨ìˆ˜ë¥¼ ì‚¬ìš©í•´ì„œ). sendto() ì‹œìŠ¤í…œ ì½œ í˜¸ì¶œ*/
        if(sendto(sockfd, sendBuffer, strlen(sendBuffer), 0, (struct sockaddr*)&servAddr, sizeof(servAddr)) != strlen(sendBuffer)) {
           perror("sendto failed");
           exit(1);
        }
        servLen = sizeof(servLen);
-       // sockfd ¼ÒÄÏÀ¸·Î µé¾î¿À´Â µ¥ÀÌÅÍ¸¦ ¹Ş¾Æ recvBuffer¿¡ ÀúÀå
+       // sockfd ì†Œì¼“ìœ¼ë¡œ ë“¤ì–´ì˜¤ëŠ” ë°ì´í„°ë¥¼ ë°›ì•„ recvBufferì— ì €ì¥
        if((recvLen=recvfrom(sockfd, recvBuffer, BUFSIZE-1, 0, (struct sockaddr*)&servAddr, &servLen)) == -1) {
           perror("recvfrom failed");
           exit(1);
        }
        recvBuffer[recvLen] = '\0';
-       // ¼­¹ö°¡ ¼Û½ÅÇÑ ¹®ÀÚ¿­ Ãâ·Â
+       // ì„œë²„ê°€ ì†¡ì‹ í•œ ë¬¸ìì—´ ì¶œë ¥
        printf("Server: %s\n", recvBuffer);
     }
-    close(sockfd); //¼ÒÄÏ Á¾·á
+    close(sockfd); //ì†Œì¼“ ì¢…ë£Œ
     exit(0);
 }
