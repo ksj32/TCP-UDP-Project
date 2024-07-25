@@ -1,66 +1,67 @@
-/* UDP ¼­¹ö(udp_server) */
+/* UDP ì„œë²„(udp_server) */
 
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h> //IPv4 Àü¿ë ±â´É »ç¿ë Çì´õ
-#include <arpa/inet.h> //ÁÖ¼Ò º¯È¯ ±â´É »ç¿ë Çì´õ
+#include <netinet/in.h> //IPv4 ì „ìš© ê¸°ëŠ¥ ì‚¬ìš© í—¤ë”
+#include <arpa/inet.h> //ì£¼ì†Œ ë³€í™˜ ê¸°ëŠ¥ ì‚¬ìš© í—¤ë”
 #include <unistd.h>
-#define PORT 7777   // Æ÷Æ® ¹øÈ£
-#define BUFSIZE 1024 //¹®ÀÚ ¹è¿­ Å©±â »ó¼ö·Î ¼±¾ğ
+#define PORT 7777   // í¬íŠ¸ ë²ˆí˜¸
+#define BUFSIZE 1024 //ë¬¸ì ë°°ì—´ í¬ê¸° ìƒìˆ˜ë¡œ ì„ ì–¸
+
 main()
 {    
 	int sockfd;
     struct sockaddr_in servAddr;
     struct sockaddr_in clntAddr;
-    char recvBuffer[BUFSIZE]; //Å¬¶óÀÌ¾ğÆ®·ÎºÎÅÍ ¹ŞÀ» ¸Ş½ÃÁö ÀúÀå ¹è¿­
-    char sendBuffer[BUFSIZE]; //Å¬¶óÀÌ¾ğÆ®¿¡°Ô Àü¼ÛÇÒ ¸Ş½ÃÁö ÀúÀå ¹è¿­
+    char recvBuffer[BUFSIZE]; //í´ë¼ì´ì–¸íŠ¸ë¡œë¶€í„° ë°›ì„ ë©”ì‹œì§€ ì €ì¥ ë°°ì—´
+    char sendBuffer[BUFSIZE]; //í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì „ì†¡í•  ë©”ì‹œì§€ ì €ì¥ ë°°ì—´
     int clntLen;
-    int recvLen; //¼ö½ÅÇÒ ¸Ş½ÃÁö Å©±â ÁöÁ¤ º¯¼ö
+    int recvLen; //ìˆ˜ì‹ í•  ë©”ì‹œì§€ í¬ê¸° ì§€ì • ë³€ìˆ˜
     int i = 0;
 	int count = 0;
     int sendLen;
-/*AF_INET ÇÁ·ÎÅäÄİ »ç¿ë, SOCK_DGRAM(UDP) ¹æ½ÄÀ¸·Î µ¥ÀÌÅÍ Àü¼Û, 0Àº ¿î¿µÃ¼Á¦°¡ ÀÚµ¿À¸·Î ¼ÒÄÏ Å¸ÀÔ¿¡ ¸Â°Ô ¼³Á¤ÇÏ°Ú´Ù´Â ¶æ. ÀÎÅÍ³İÀ¸·Î ¿¬°áµÈ ÇÁ·Î¼¼½º °£¿¡ Åë½ÅÇÏ°í UDP ¹æ¹ıÀ» ÀÌ¿ëÇÏ´Â ¼ÒÄÏÀ» »ı¼º 
-socket() ½Ã½ºÅÛ ÄİÀ» È£ÃâÇÔ
+/*AF_INET í”„ë¡œí† ì½œ ì‚¬ìš©, SOCK_DGRAM(UDP) ë°©ì‹ìœ¼ë¡œ ë°ì´í„° ì „ì†¡, 0ì€ ìš´ì˜ì²´ì œê°€ ìë™ìœ¼ë¡œ ì†Œì¼“ íƒ€ì…ì— ë§ê²Œ ì„¤ì •í•˜ê² ë‹¤ëŠ” ëœ». ì¸í„°ë„·ìœ¼ë¡œ ì—°ê²°ëœ í”„ë¡œì„¸ìŠ¤ ê°„ì— í†µì‹ í•˜ê³  UDP ë°©ë²•ì„ ì´ìš©í•˜ëŠ” ì†Œì¼“ì„ ìƒì„± 
+socket() ì‹œìŠ¤í…œ ì½œì„ í˜¸ì¶œí•¨
 */
-    if((sockfd=socket(AF_INET, SOCK_DGRAM, 0)) == -1) { //¿¡·¯ Ã³¸®
+    if((sockfd=socket(AF_INET, SOCK_DGRAM, 0)) == -1) { //ì—ëŸ¬ ì²˜ë¦¬
        perror("socket failed");
        exit(1);
     }
-    // servAddr¸¦ 0À¸·Î ÃÊ±âÈ­ 
+    // servAddrë¥¼ 0ìœ¼ë¡œ ì´ˆê¸°í™” 
     memset(&servAddr, 0, sizeof(servAddr));
-    // servAddr¿¡ IP ÁÖ¼Ò¿Í Æ÷Æ® ¹øÈ£¸¦ ÀúÀå 
+    // servAddrì— IP ì£¼ì†Œì™€ í¬íŠ¸ ë²ˆí˜¸ë¥¼ ì €ì¥ 
     servAddr.sin_family = AF_INET;
     servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     servAddr.sin_port = htons(PORT);
-    /* sockfd ¼ÒÄÏ¿¡ ÁÖ¼Ò Á¤º¸ ¿¬°á
-bind ÇÔ¼ö´Â ½ÇÆĞ½Ã &#8211;1À» ¹İÈ¯ÇÏ±â ¶§¹®¿¡ &#8211;1ÀÏ °æ¿ì ¿¡·¯ Ã³¸®*/
+    /* sockfd ì†Œì¼“ì— ì£¼ì†Œ ì •ë³´ ì—°ê²°
+bind í•¨ìˆ˜ëŠ” ì‹¤íŒ¨ì‹œ &#8211;1ì„ ë°˜í™˜í•˜ê¸° ë•Œë¬¸ì— &#8211;1ì¼ ê²½ìš° ì—ëŸ¬ ì²˜ë¦¬*/
     if(bind(sockfd, (struct sockaddr*)&servAddr, sizeof(servAddr)) == -1) {
        perror("bind failed");
        exit(1);
     }
-    // ÇÁ·Î±×·¥ ÁßÁö½ÃÅ³ ¶§±îÁö ¹«ÇÑ ¹İº¹
+    // í”„ë¡œê·¸ë¨ ì¤‘ì§€ì‹œí‚¬ ë•Œê¹Œì§€ ë¬´í•œ ë°˜ë³µ
     while(1) {
        clntLen = sizeof(clntAddr);
-       /* sockfd ¼ÒÄÏÀ¸·Î µé¾î¿À´Â µ¥ÀÌÅÍ¸¦ ¹Ş¾Æ recvBuffer¿¡ ÀúÀåÇÏ°í
-          Å¬¶óÀÌ¾ğÆ® ÁÖ¼Ò Á¤º¸¸¦ clntAddr¿¡ ÀúÀå */
+       /* sockfd ì†Œì¼“ìœ¼ë¡œ ë“¤ì–´ì˜¤ëŠ” ë°ì´í„°ë¥¼ ë°›ì•„ recvBufferì— ì €ì¥í•˜ê³ 
+          í´ë¼ì´ì–¸íŠ¸ ì£¼ì†Œ ì •ë³´ë¥¼ clntAddrì— ì €ì¥ */
        if((recvLen=recvfrom(sockfd, recvBuffer, BUFSIZE-1, 0, (struct sockaddr*)&clntAddr, &clntLen)) == -1) {
           perror("recvfrom failed");
           exit(1);
        }
        recvBuffer[recvLen] = '\0';
-       // ¹ŞÀº µ¥ÀÌÅÍ¸¦ Ãâ·Â 
+       // ë°›ì€ ë°ì´í„°ë¥¼ ì¶œë ¥ 
        printf("Client: %s\n", recvBuffer);
-       //udp_client¿¡°Ô ¹ŞÀº ¸Ş½ÃÁö¸¦ Ãâ·ÂÇÏ°í ¼Û½ÅÇÒ ¸Ş½ÃÁö ÀÔ·Â
+       //udp_clientì—ê²Œ ë°›ì€ ë©”ì‹œì§€ë¥¼ ì¶œë ¥í•˜ê³  ì†¡ì‹ í•  ë©”ì‹œì§€ ì…ë ¥
        printf("Input Message : ");
-       fgets(sendBuffer, BUFSIZE, stdin); //stdinÀº Ç¥ÁØ ÀÔ·Â ¹öÆÛ
-       /*sendtoÇÔ¼ö¸¦ ÀÌ¿ëÇÏ¿© udp_client¿¡°Ô ¸Ş½ÃÁö ¼Û½Å
-	sendto() ½Ã½ºÅÛ Äİ È£Ãâ*/
+       fgets(sendBuffer, BUFSIZE, stdin); //stdinì€ í‘œì¤€ ì…ë ¥ ë²„í¼
+       /*sendtoí•¨ìˆ˜ë¥¼ ì´ìš©í•˜ì—¬ udp_clientì—ê²Œ ë©”ì‹œì§€ ì†¡ì‹ 
+	sendto() ì‹œìŠ¤í…œ ì½œ í˜¸ì¶œ*/
        if(sendto(sockfd, sendBuffer, strlen(sendBuffer), 0, (struct sockaddr*)&clntAddr, sizeof(clntAddr)) != strlen(sendBuffer)) {
           perror("sendto failed");
           exit(1);
-//ÀÔ·ÂÇÑ ¸Ş½ÃÁö¿Í ¼Û½ÅµÈ ¸Ş½ÃÁö Å©±â°¡ ´Ù¸£¸é sendto ½ÇÆĞ·Î ¿¡·¯ Ã³¸®
+//ì…ë ¥í•œ ë©”ì‹œì§€ì™€ ì†¡ì‹ ëœ ë©”ì‹œì§€ í¬ê¸°ê°€ ë‹¤ë¥´ë©´ sendto ì‹¤íŒ¨ë¡œ ì—ëŸ¬ ì²˜ë¦¬
        }
     }
 }
