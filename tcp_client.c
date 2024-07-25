@@ -1,36 +1,37 @@
-/* TCP Å¬¶óÀÌ¾ğÆ®(tcp_client) */
+/* TCP í´ë¼ì´ì–¸íŠ¸(tcp_client) */
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <unistd.h> //access, read, write µîÀÇ ÇÔ¼ö¸¦ À§ÇÑ Çì´õ
-#include <stdio.h> //±âº»ÀûÀÎ ÀÔÃâ·ÂÀ» À§ÇÑ Çì´õ
-#include <stdlib.h> //¹®ÀÚ º¯È¯ µîÀ» À§ÇÑ Çì´õ
-#include <string.h> //¹®ÀÚ¿­À» À§ÇÑ Çì´õ
-#define MAXLINE 1024 //¹®ÀÚ ¹è¿­ Å©±â ÁöÁ¤¿ë »ó¼ö
+#include <unistd.h> //access, read, write ë“±ì˜ í•¨ìˆ˜ë¥¼ ìœ„í•œ í—¤ë”
+#include <stdio.h> //ê¸°ë³¸ì ì¸ ì…ì¶œë ¥ì„ ìœ„í•œ í—¤ë”
+#include <stdlib.h> //ë¬¸ì ë³€í™˜ ë“±ì„ ìœ„í•œ í—¤ë”
+#include <string.h> //ë¬¸ìì—´ì„ ìœ„í•œ í—¤ë”
+#define MAXLINE 1024 //ë¬¸ì ë°°ì—´ í¬ê¸° ì§€ì •ìš© ìƒìˆ˜
+
 int main(int argc, char **argv){
 	int client_len;
 	int client_sockfd;	
 	FILE *fp_in;
-	char buf_in[MAXLINE]; //Server°¡ ¼Û½ÅÇÏ´Â ¸Ş½ÃÁö ÀúÀåÇÒ ¹è¿­
-	char buf_get[MAXLINE]; //Client°¡ ¼Û½ÅÇÒ ¸Ş½ÃÁö ÀúÀåÇÒ ¹è¿­
+	char buf_in[MAXLINE]; //Serverê°€ ì†¡ì‹ í•˜ëŠ” ë©”ì‹œì§€ ì €ì¥í•  ë°°ì—´
+	char buf_get[MAXLINE]; //Clientê°€ ì†¡ì‹ í•  ë©”ì‹œì§€ ì €ì¥í•  ë°°ì—´
 	char result;
 	int i;
 	struct sockaddr_un clientaddr; 
-		if(argc != 2){ //ÀÎÀÚ°¡ 2°³ÀÎÁö È®ÀÎ argc = ÀÎÀÚ °³¼ö
+		if(argc != 2){ //ì¸ìê°€ 2ê°œì¸ì§€ í™•ì¸ argc = ì¸ì ê°œìˆ˜
 		printf("Usage : %s [socket file name]\n", argv[0]);
 		printf("example : %s /tmp/mysocket\n", argv[0]);
 		exit(0);
 	}
-	client_sockfd = socket(AF_UNIX, SOCK_STREAM, 0); //¼ÒÄÏ ¼³Á¤
+	client_sockfd = socket(AF_UNIX, SOCK_STREAM, 0); //ì†Œì¼“ ì„¤ì •
 	if(client_sockfd == -1){
-		perror("error : "); //¿¡·¯ Ã³¸®
+		perror("error : "); //ì—ëŸ¬ ì²˜ë¦¬
 		exit(0);
 	}
 	bzero(&clientaddr, sizeof(clientaddr));
-	clientaddr.sun_family = AF_UNIX; //sun_family ´Â AF_UNIX¸¦ ¶æÇÔ
-	strcpy(clientaddr.sun_path, argv[1]); //¹®ÀÚ¿­ º¹»ç
+	clientaddr.sun_family = AF_UNIX; //sun_family ëŠ” AF_UNIXë¥¼ ëœ»í•¨
+	strcpy(clientaddr.sun_path, argv[1]); //ë¬¸ìì—´ ë³µì‚¬
 	client_len = sizeof(clientaddr);
 		if(connect(client_sockfd,(struct sockaddr *)&clientaddr, client_len)<0)
 	{
@@ -39,16 +40,16 @@ int main(int argc, char **argv){
 	}
 	while(1)
 	{
-		memset(buf_in, 0x00, MAXLINE); //¸Ş¸ğ¸® Å©±â
+		memset(buf_in, 0x00, MAXLINE); //ë©”ëª¨ë¦¬ í¬ê¸°
 		memset(buf_get, 0x00, MAXLINE);
-		printf("Put Message : "); //Server·Î ¼Û½ÅÇÒ ¸Ş½ÃÁö ÀÔ·Â
+		printf("Put Message : "); //Serverë¡œ ì†¡ì‹ í•  ë©”ì‹œì§€ ì…ë ¥
 		fgets(buf_in, MAXLINE, stdin); 
-		//server¿¡ Àü¼Û
+		//serverì— ì „ì†¡
 		write(client_sockfd, buf_in, strlen(buf_in)); 
-		//server°¡ º¸³½ ¸Ş½ÃÁö ¼ö½Å
+		//serverê°€ ë³´ë‚¸ ë©”ì‹œì§€ ìˆ˜ì‹ 
 		read(client_sockfd, buf_get, MAXLINE); 
-		printf("server : %s\n",buf_get); //¼ö½Å¹ŞÀº ¸Ş½ÃÁö¸¦ Ãâ·ÂÇÔ
+		printf("server : %s\n",buf_get); //ìˆ˜ì‹ ë°›ì€ ë©”ì‹œì§€ë¥¼ ì¶œë ¥í•¨
 	}
-	close(client_sockfd); //¿¬°áÀ» ÇØÁ¦ÇÔ
+	close(client_sockfd); //ì—°ê²°ì„ í•´ì œí•¨
 	exit(0);
 }
