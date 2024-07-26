@@ -18,7 +18,7 @@ main(int argc, char *argv[])
     char sendBuffer[BUFSIZE], recvBuffer[BUFSIZE]; 
     // 송신, 수신할 메시지 크기 저장하는 변수
     int recvLen, servLen;
-    /* argc=인자 수, 인자 수가 2개가 아니면 아래와 같은 방식으로 사용하라고 예문 출력 */
+    /* argc = 인자 수, 인자 수가 2개가 아니면 아래와 같은 방식으로 사용하라고 예문 출력 */
     if(argc != 2) {
        fprintf(stderr, "Usage: %s IP_address\n", argv[0]);
        exit(1);
