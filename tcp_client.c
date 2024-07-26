@@ -45,8 +45,8 @@ int main(int argc, char **argv){
 		printf("Put Message : "); //Server로 송신할 메시지 입력
 		fgets(buf_in, MAXLINE, stdin); 
 		
-		write(client_sockfd, buf_in, strlen(buf_in)); 	 //server에 전송
-		read(client_sockfd, buf_get, MAXLINE);		 //server가 보낸 메시지 수신
+		write(client_sockfd, buf_in, strlen(buf_in)); 	 //server에 전송 (=send)
+		read(client_sockfd, buf_get, MAXLINE);		 //server가 보낸 메시지 수신 (=receive)
 		printf("server : %s\n",buf_get); 		 //수신받은 메시지를 출력함
 	}
 	close(client_sockfd); //연결을 해제함
