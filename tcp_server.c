@@ -24,10 +24,10 @@ int main(int argc, char **argv){
 		printf("example : %s /tmp/mysocket\n", argv[0]);
 		exit(0);
 	}
-	if(access(argv[1], F_OK) == 0){			 // 파일 또는 디렉토리의 사용자 권한 체크 (F_OK = 파일 존재 여부) 
+	if(access(argv[1], F_OK) == 0){			 // 파일 또는 디렉토리의 사용자 권한 체크 (F_OK mode = 파일 존재 여부) 
 		unlink(argv[1]);			 // 파일 삭제 
 	}
-	client_len = sizeof(clientaddr); 		// 길이 파악
+	client_len = sizeof(clientaddr); 		 // 길이 파악
 	/* AF_UNIX 프로토콜 사용, SOCK_STREAM(TCP) 방식으로 데이터 전송, 0은 운영체제가 자동으로 소켓 타입에 맞게 설정하겠다는 뜻 */
 	if((server_sockfd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){
 		perror("socket error : ");
