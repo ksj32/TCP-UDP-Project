@@ -33,7 +33,7 @@ int main(int argc, char **argv){
 	clientaddr.sun_family = AF_UNIX; 	// sun_family 는 AF_UNIX를 뜻함
 	strcpy(clientaddr.sun_path, argv[1]);   // 문자열 복사
 	client_len = sizeof(clientaddr);
-	if(connect(client_sockfd,(struct sockaddr *)&clientaddr, client_len)<0)
+	if(connect(client_sockfd, (struct sockaddr *)&clientaddr, client_len) < 0)
 	{
 		perror("connect error: ");
 		exit(0);
@@ -45,8 +45,8 @@ int main(int argc, char **argv){
 		printf("Put Message : "); 	// Server로 송신할 메시지 입력
 		fgets(buf_in, MAXLINE, stdin); 
 		
-		write(client_sockfd, buf_in, strlen(buf_in)); 	 // server에 전송 (= send)
-		read(client_sockfd, buf_get, MAXLINE);		 // server가 보낸 메시지 수신 (= receive)
+		write(client_sockfd, buf_in, strlen(buf_in)); 	 // server에 전송 (=send)
+		read(client_sockfd, buf_get, MAXLINE);		 // server가 보낸 메시지 수신 (=receive)
 		printf("server : %s\n", buf_get); 		 // 수신받은 메시지를 출력함
 	}
 	close(client_sockfd); // 연결을 해제함
