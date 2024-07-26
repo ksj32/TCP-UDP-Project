@@ -19,7 +19,7 @@ int main(int argc, char **argv){
 	char result;
 	int i;
 	struct sockaddr_un clientaddr; 
-	if(argc != 2){ 			// 인자가 2개인지 확인 argc = 인자 개수
+	if(argc != 2){ 			// 인자가 2개인지 확인 (argc = 인자 개수)
 		printf("Usage : %s [socket file name]\n", argv[0]);
 		printf("example : %s /tmp/mysocket\n", argv[0]);
 		exit(0);
@@ -40,14 +40,14 @@ int main(int argc, char **argv){
 	}
 	while(1)
 	{
-		memset(buf_in, 0x00, MAXLINE); // 메모리 크기
+		memset(buf_in, 0x00, MAXLINE);  // 메모리 크기
 		memset(buf_get, 0x00, MAXLINE);
 		printf("Put Message : "); 	// Server로 송신할 메시지 입력
 		fgets(buf_in, MAXLINE, stdin); 
 		
-		write(client_sockfd, buf_in, strlen(buf_in)); 	 // server에 전송 (=send)
-		read(client_sockfd, buf_get, MAXLINE);		 // server가 보낸 메시지 수신 (=receive)
-		printf("server : %s\n",buf_get); 		 // 수신받은 메시지를 출력함
+		write(client_sockfd, buf_in, strlen(buf_in)); 	 // server에 전송 (= send)
+		read(client_sockfd, buf_get, MAXLINE);		 // server가 보낸 메시지 수신 (= receive)
+		printf("server : %s\n", buf_get); 		 // 수신받은 메시지를 출력함
 	}
 	close(client_sockfd); // 연결을 해제함
 	exit(0);
