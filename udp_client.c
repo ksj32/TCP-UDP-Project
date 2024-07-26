@@ -24,7 +24,7 @@ main(int argc, char *argv[])
        exit(1);
     }
     /* AF_INET 프로토콜 사용, SOCK_DGRAM(UDP) 방식으로 데이터 전송, 0은 운영체제가 자동으로 소켓 타입에 맞게 설정하겠다는 뜻. 
-    인터넷으로 연결된 프로세스 간에 통신하고 UDP 방법을 이용하는 소켓을 생성 */
+       인터넷으로 연결된 프로세스 간에 통신하고 UDP 방법을 이용하는 소켓을 생성 */
     if((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
        perror("sock failed");
        exit(1);
