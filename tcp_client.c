@@ -29,9 +29,9 @@ int main(int argc, char **argv){
 		perror("error : "); // 에러 처리
 		exit(0);
 	}
-	bzero(&clientaddr, sizeof(clientaddr));
-	clientaddr.sun_family = AF_UNIX; 	// sun_family 는 AF_UNIX를 뜻함
-	strcpy(clientaddr.sun_path, argv[1]);   // 문자열 복사
+	bzero(&clientaddr, sizeof(clientaddr));		// clientaddr의 사이즈만큼 0으로 대체
+	clientaddr.sun_family = AF_UNIX; 		// sun_family 는 AF_UNIX를 뜻함
+	strcpy(clientaddr.sun_path, argv[1]);   	// 문자열 복사
 	client_len = sizeof(clientaddr);
 	if(connect(client_sockfd, (struct sockaddr *)&clientaddr, client_len) < 0)
 	{
