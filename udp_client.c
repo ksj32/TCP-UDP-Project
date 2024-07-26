@@ -7,25 +7,25 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#define PORT 7777    // 서버의 포트 번호 
-#define BUFSIZE 1024 // 문자 배열 크기 상수로 선언
+#define PORT 7777     // 서버의 포트 번호 
+#define BUFSIZE 1024  // 문자 배열 크기 상수로 선언
 // argv[1]은 수와 점 표기의 IP 주소
 main(int argc, char *argv[])
 {    
     int sockfd;
     struct sockaddr_in servAddr;
-  // 송신, 수신할 메시지 저장하는 문자 배열
+    // 송신, 수신할 메시지 저장하는 문자 배열
     char sendBuffer[BUFSIZE], recvBuffer[BUFSIZE]; 
-  // 송신, 수신할 메시지 크기 저장하는 변수
+    // 송신, 수신할 메시지 크기 저장하는 변수
     int recvLen, servLen;
-  /* argc=인자 수, 인자 수가 2개가 아니면 아래와 같은 방식으로 사용하라고 예문 출력 */
+    /* argc=인자 수, 인자 수가 2개가 아니면 아래와 같은 방식으로 사용하라고 예문 출력 */
     if(argc != 2) {
        fprintf(stderr, "Usage: %s IP_address\n", argv[0]);
        exit(1);
     }
     /* AF_INET 프로토콜 사용, SOCK_DGRAM(UDP) 방식으로 데이터 전송, 0은 운영체제가 자동으로 소켓 타입에 맞게 설정하겠다는 뜻. 
     인터넷으로 연결된 프로세스 간에 통신하고 UDP 방법을 이용하는 소켓을 생성 */
-    if((sockfd=socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
+    if((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
        perror("sock failed");
        exit(1);
     }
@@ -36,7 +36,7 @@ main(int argc, char *argv[])
     servAddr.sin_port = htons(PORT);
     // Ctrl+c로 정지할 때까지 무한 반복
     while(1) {
-	// 송신할 문자열 입력 받아 sendBuffer에 저장
+       // 송신할 문자열 입력 받아 sendBuffer에 저장
        printf("Input Message : ");
        fgets(sendBuffer, BUFSIZE, stdin); //stdin은 표준 입력 버퍼
        
