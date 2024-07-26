@@ -14,8 +14,8 @@ int main(int argc, char **argv){
 	int client_len;
 	int client_sockfd;	
 	FILE *fp_in;
-	char buf_in[MAXLINE]; //Server가 송신하는 메시지 저장할 배열
-	char buf_get[MAXLINE]; //Client가 송신할 메시지 저장할 배열
+	char buf_in[MAXLINE]; //Server로 송신하는 메시지 저장할 배열
+	char buf_get[MAXLINE]; //Client가 수신할 메시지 저장할 배열
 	char result;
 	int i;
 	struct sockaddr_un clientaddr; 
@@ -44,11 +44,10 @@ int main(int argc, char **argv){
 		memset(buf_get, 0x00, MAXLINE);
 		printf("Put Message : "); //Server로 송신할 메시지 입력
 		fgets(buf_in, MAXLINE, stdin); 
-		//server에 전송
-		write(client_sockfd, buf_in, strlen(buf_in)); 
-		//server가 보낸 메시지 수신
-		read(client_sockfd, buf_get, MAXLINE); 
-		printf("server : %s\n",buf_get); //수신받은 메시지를 출력함
+		
+		write(client_sockfd, buf_in, strlen(buf_in)); 	 //server에 전송
+		read(client_sockfd, buf_get, MAXLINE);		 //server가 보낸 메시지 수신
+		printf("server : %s\n",buf_get); 		 //수신받은 메시지를 출력함
 	}
 	close(client_sockfd); //연결을 해제함
 	exit(0);
