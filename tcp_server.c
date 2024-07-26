@@ -1,24 +1,24 @@
-/* TCP ¼­¹ö(tcp_server) */
+/* TCP ì„œë²„(tcp_server) */
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <unistd.h> //access, read, write µîÀÇ ÇÔ¼ö¸¦ À§ÇÑ Çì´õ
-#include <stdio.h> //±âº»ÀûÀÎ ÀÔÃâ·ÂÀ» À§ÇÑ Çì´õ
-#include <stdlib.h> //¹®ÀÚ º¯È¯ µîÀ» À§ÇÑ Çì´õ
-#include <string.h> //¹®ÀÚ¿­À» À§ÇÑ Çì´õ
-#define MAXLINE 1024 //¹®ÀÚ ¹è¿­ Å©±â ÁöÁ¤¿ë »ó¼ö
+#include <unistd.h> //access, read, write ë“±ì˜ í•¨ìˆ˜ë¥¼ ìœ„í•œ í—¤ë”
+#include <stdio.h> //ê¸°ë³¸ì ì¸ ì…ì¶œë ¥ì„ ìœ„í•œ í—¤ë”
+#include <stdlib.h> //ë¬¸ì ë³€í™˜ ë“±ì„ ìœ„í•œ í—¤ë”
+#include <string.h> //ë¬¸ìì—´ì„ ìœ„í•œ í—¤ë”
+#define MAXLINE 1024 //ë¬¸ì ë°°ì—´ í¬ê¸° ì§€ì •ìš© ìƒìˆ˜
 
 int main(int argc, char **argv){
-	int server_sockfd, client_sockfd; //¼ÒÄÏ Åë½ÅÀ» À§ÇÑ º¯¼ö
-	int state, client_len; //¼ÒÄÏ Åë½Å½Ã »óÅÂ ¹× ±æÀÌ ÆÄ¾ÇÀ» À§ÇÑ º¯¼ö
+	int server_sockfd, client_sockfd; //ì†Œì¼“ í†µì‹ ì„ ìœ„í•œ ë³€ìˆ˜
+	int state, client_len; //ì†Œì¼“ í†µì‹ ì‹œ ìƒíƒœ ë° ê¸¸ì´ íŒŒì•…ì„ ìœ„í•œ ë³€ìˆ˜
 	pid_t pid;
 	FILE *fp;
-	struct sockaddr_un clientaddr, serveraddr; //¼ÒÄÏ Åë½ÅÀ» À§ÇÑ ±¸Á¶Ã¼
-	char buf[MAXLINE]; //Client¿¡¼­ º¸³½ ¸Ş½ÃÁö ÀúÀåÇÒ ¹è¿­
-	char sendMsg[MAXLINE]; //Server°¡ º¸³¾ ¸Ş½ÃÁö ÀúÀåÇÒ ¹è¿­
-	//°æ·Î ¼³Á¤ÀÌ Á¦´ë·Î µÇ¾îÀÖ´ÂÁö ÀÎÀÚ¸¦ È®ÀÎ argc = ÀÎÀÚ °³¼ö
+	struct sockaddr_un clientaddr, serveraddr; //ì†Œì¼“ í†µì‹ ì„ ìœ„í•œ êµ¬ì¡°ì²´
+	char buf[MAXLINE]; //Clientì—ì„œ ë³´ë‚¸ ë©”ì‹œì§€ ì €ì¥í•  ë°°ì—´
+	char sendMsg[MAXLINE]; //Serverê°€ ë³´ë‚¼ ë©”ì‹œì§€ ì €ì¥í•  ë°°ì—´
+	//ê²½ë¡œ ì„¤ì •ì´ ì œëŒ€ë¡œ ë˜ì–´ìˆëŠ”ì§€ ì¸ìë¥¼ í™•ì¸ argc = ì¸ì ê°œìˆ˜
 	if(argc != 2){ 
 		printf("Usage : %s [socket file name]\n", argv[0]);
 		printf("example : %s /tmp/mysocket\n", argv[0]);
@@ -27,55 +27,54 @@ int main(int argc, char **argv){
 	if(access(argv[1], F_OK) == 0){
 		unlink(argv[1]);
 	}
-	client_len = sizeof(clientaddr); //±æÀÌ ÆÄ¾Ç
-/*AF_UNIX ÇÁ·ÎÅäÄİ »ç¿ë, SOCK_STREAM(TCP) ¹æ½ÄÀ¸·Î µ¥ÀÌÅÍ Àü¼Û, 0Àº ¿î¿µÃ¼Á¦°¡ ÀÚµ¿À¸·Î ¼ÒÄÏ Å¸ÀÔ¿¡ ¸Â°Ô ¼³Á¤ÇÏ°Ú´Ù´Â ¶æ
-*/
+	client_len = sizeof(clientaddr); //ê¸¸ì´ íŒŒì•…
+/*AF_UNIX í”„ë¡œí† ì½œ ì‚¬ìš©, SOCK_STREAM(TCP) ë°©ì‹ìœ¼ë¡œ ë°ì´í„° ì „ì†¡, 0ì€ ìš´ì˜ì²´ì œê°€ ìë™ìœ¼ë¡œ ì†Œì¼“ íƒ€ì…ì— ë§ê²Œ ì„¤ì •í•˜ê² ë‹¤ëŠ” ëœ» */
 	if((server_sockfd = socket(AF_UNIX, SOCK_STREAM, 0))<0){
 		perror("socket error : ");
 		exit(0);
 	}
-	bzero(&serveraddr, sizeof(serveraddr)); //serveraddrÀÇ »çÀÌÁî¸¸Å­ 0À¸·Î ´ëÃ¼
+	bzero(&serveraddr, sizeof(serveraddr)); 	//serveraddrì˜ ì‚¬ì´ì¦ˆë§Œí¼ 0ìœ¼ë¡œ ëŒ€ì²´
 	serveraddr.sun_family = AF_UNIX;
-	strcpy(serveraddr.sun_path, argv[1]); //¹®ÀÚ¿­ º¹»ç
-	/*¼ÒÄÏ¿¡ IPÁÖ¼Ò¿Í Æ÷Æ®¹øÈ£¸¦ ÁöÁ¤ÇÏ¿© Åë½Å ÁØºñ¸¦ ÇÔ
-	bind½Ã setsocket() ½Ã½ºÅÛ Äİ È£Ãâ */
-	state = bind(server_sockfd, (struct sockaddr *)&serveraddr, sizeof(serveraddr)); //bind()´Â ½ÇÆĞÇÏ¸é &#8211;1À» ¹İÈ¯ÇÏ¹Ç·Î ¿¡·¯ Ã³¸®
+	strcpy(serveraddr.sun_path, argv[1]); //ë¬¸ìì—´ ë³µì‚¬
+	/*ì†Œì¼“ì— IPì£¼ì†Œì™€ í¬íŠ¸ë²ˆí˜¸ë¥¼ ì§€ì •í•˜ì—¬ í†µì‹  ì¤€ë¹„ë¥¼ í•¨
+	bindì‹œ setsocket() ì‹œìŠ¤í…œ ì½œ í˜¸ì¶œ */
+	state = bind(server_sockfd, (struct sockaddr *)&serveraddr, sizeof(serveraddr)); //bind()ëŠ” ì‹¤íŒ¨í•˜ë©´ &#8211;1ì„ ë°˜í™˜í•˜ë¯€ë¡œ ì—ëŸ¬ ì²˜ë¦¬
 	if(state == -1)
 	{
 		perror("bind error : ");
 		exit(0);
 	}
-	state = listen(server_sockfd, 5); //listen() -1 ¹İÈ¯ ½Ã ¿¡·¯Ã³¸®
+	state = listen(server_sockfd, 5); //listen() -1 ë°˜í™˜ ì‹œ ì—ëŸ¬ì²˜ë¦¬
 	if(state == -1)
 	{
 		perror("listen error : ");
 		exit(0);
 	}
-	while(1){ //½º·¹µåÃ³·³ ¿¬°áµÉ ¶§±îÁö °è¼Ó ¹İº¹ÇÏ°í ÀÖÀ½
+	while(1){ //ìŠ¤ë ˆë“œì²˜ëŸ¼ ì—°ê²°ë  ë•Œê¹Œì§€ ê³„ì† ë°˜ë³µí•˜ê³  ìˆìŒ
 	client_sockfd = accept(server_sockfd, (struct sockaddr *)&clientaddr, &client_len);
-	pid = fork(); //fork()´Â ºÎ¸ğÀÏ °æ¿ì ÀÚ½Ä ÇÁ·Î¼¼½º PID, ÀÚ½ÄÀÏ °æ¿ì 0À» ¹İÈ¯ÇÔ
-	if(pid ==0){ //pid°¡ 0ÀÌ¶ó´Â °ÍÀº ÇöÀç ÀÚ½Ä ÇÁ·Î¼¼½º¶ó´Â ¶æ
+	pid = fork(); //fork()ëŠ” ë¶€ëª¨ì¼ ê²½ìš° ìì‹ í”„ë¡œì„¸ìŠ¤ PID, ìì‹ì¼ ê²½ìš° 0ì„ ë°˜í™˜í•¨
+	if(pid ==0){ //pidê°€ 0ì´ë¼ëŠ” ê²ƒì€ í˜„ì¬ ìì‹ í”„ë¡œì„¸ìŠ¤ë¼ëŠ” ëœ»
 			if(client_sockfd == -1){
 				perror("Accept error : ");
 				exit(0);
 			}
 			while(1){
-				memset(buf, 0x00, MAXLINE); //¸Ş¸ğ¸® Å©±â ¼³Á¤
-				//client¿¡¼­ º¸³½ Á¤º¸¸¦ ¼ö½ÅÇÔ
+				memset(buf, 0x00, MAXLINE); //ë©”ëª¨ë¦¬ í¬ê¸° ì„¤ì •
+				//clientì—ì„œ ë³´ë‚¸ ì •ë³´ë¥¼ ìˆ˜ì‹ í•¨
 				if(read(client_sockfd, buf, MAXLINE) <= 0){
 					close(client_sockfd);
 					exit(0);
 				}
-                           //Client¿¡¼­ º¸³½ ¸Ş½ÃÁö Ãâ·Â
+                           //Clientì—ì„œ ë³´ë‚¸ ë©”ì‹œì§€ ì¶œë ¥
 				printf("client : %s\n", buf); 
-				//Server°¡ Client¿¡°Ô ¼Û½ÅÇÒ ¸Ş½ÃÁö ÀÔ·Â
+				//Serverê°€ Clientì—ê²Œ ì†¡ì‹ í•  ë©”ì‹œì§€ ì…ë ¥
 				printf("Put Message : ");
 				scanf("%[^\n]", sendMsg);
-				getchar(); //¹öÆÛ ÃÊ±âÈ­
-				//Client¿¡°Ô ¸Ş½ÃÁö ¼Û½Å
+				getchar(); //ë²„í¼ ì´ˆê¸°í™”
+				//Clientì—ê²Œ ë©”ì‹œì§€ ì†¡ì‹ 
 			    write(client_sockfd, sendMsg, sizeof(sendMsg));
 		}	
 	}
 } 
-	close(client_sockfd); //¿¬°áÀ» ÇØÁ¦ÇÔ
+	close(client_sockfd); //ì—°ê²°ì„ í•´ì œí•¨
 }
