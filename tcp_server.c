@@ -16,26 +16,26 @@ int main(int argc, char **argv){
 	pid_t pid;
 	FILE *fp;
 	struct sockaddr_un clientaddr, serveraddr; // 소켓 통신을 위한 구조체
-	char buf[MAXLINE]; // Client에서 보낸 메시지 저장할 배열
+	char buf[MAXLINE];     // Client에서 보낸 메시지 저장할 배열
 	char sendMsg[MAXLINE]; // Server가 보낼 메시지 저장할 배열
-	// 경로 설정이 제대로 되어있는지 인자를 확인 argc = 인자 개수
+	// 경로 설정이 제대로 되어있는지 인자를 확인 (argc = 인자 개수)
 	if(argc != 2){ 
 		printf("Usage : %s [socket file name]\n", argv[0]);
 		printf("example : %s /tmp/mysocket\n", argv[0]);
 		exit(0);
 	}
-	if(access(argv[1], F_OK) == 0){
-		unlink(argv[1]);
+	if(access(argv[1], F_OK) == 0){			 // 파일 또는 디렉토리의 사용자 권한 체크 (F_OK = 파일 존재 여부) 
+		unlink(argv[1]);			 // 파일 삭제 
 	}
-	client_len = sizeof(clientaddr); // 길이 파악
+	client_len = sizeof(clientaddr); 		// 길이 파악
 	/* AF_UNIX 프로토콜 사용, SOCK_STREAM(TCP) 방식으로 데이터 전송, 0은 운영체제가 자동으로 소켓 타입에 맞게 설정하겠다는 뜻 */
-	if((server_sockfd = socket(AF_UNIX, SOCK_STREAM, 0))<0){
+	if((server_sockfd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){
 		perror("socket error : ");
 		exit(0);
 	}
 	bzero(&serveraddr, sizeof(serveraddr)); 	// serveraddr의 사이즈만큼 0으로 대체
 	serveraddr.sun_family = AF_UNIX;
-	strcpy(serveraddr.sun_path, argv[1]); //문자열 복사
+	strcpy(serveraddr.sun_path, argv[1]);		// 문자열 복사
 	/* 소켓에 IP주소와 포트번호를 지정하여 통신 준비를 함, bind시 setsocket() 시스템 콜 호출 */
 	state = bind(server_sockfd, (struct sockaddr *)&serveraddr, sizeof(serveraddr)); 	
 	// bind()는 실패하면 -1을 반환하므로 에러 처리
@@ -44,7 +44,7 @@ int main(int argc, char **argv){
 		perror("bind error : ");
 		exit(0);
 	}
-	state = listen(server_sockfd, 5); // listen() -1 반환 시 에러처리
+	state = listen(server_sockfd, 5); 	// listen()함수 -1 반환 시 에러처리
 	if(state == -1)
 	{
 		perror("listen error : ");
