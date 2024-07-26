@@ -14,7 +14,7 @@ int main(int argc, char **argv){
 	int client_len;
 	int client_sockfd;	
 	FILE *fp_in;
-	char buf_in[MAXLINE]; //Server로 송신하는 메시지 저장할 배열
+	char buf_in[MAXLINE];  //Server로 송신할 메시지 저장할 배열
 	char buf_get[MAXLINE]; //Client가 수신할 메시지 저장할 배열
 	char result;
 	int i;
