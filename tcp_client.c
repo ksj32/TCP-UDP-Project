@@ -14,12 +14,12 @@ int main(int argc, char **argv){
 	int client_len;
 	int client_sockfd;	
 	FILE *fp_in;
-	char buf_in[MAXLINE];  //Server로 송신할 메시지 저장할 배열
-	char buf_get[MAXLINE]; //Client가 수신할 메시지 저장할 배열
+	char buf_in[MAXLINE];  		//Server로 송신할 메시지 저장할 배열
+	char buf_get[MAXLINE]; 		//Client가 수신할 메시지 저장할 배열
 	char result;
 	int i;
 	struct sockaddr_un clientaddr; 
-		if(argc != 2){ //인자가 2개인지 확인 argc = 인자 개수
+	if(argc != 2){ 	//인자가 2개인지 확인 argc = 인자 개수
 		printf("Usage : %s [socket file name]\n", argv[0]);
 		printf("example : %s /tmp/mysocket\n", argv[0]);
 		exit(0);
@@ -33,7 +33,7 @@ int main(int argc, char **argv){
 	clientaddr.sun_family = AF_UNIX; //sun_family 는 AF_UNIX를 뜻함
 	strcpy(clientaddr.sun_path, argv[1]); //문자열 복사
 	client_len = sizeof(clientaddr);
-		if(connect(client_sockfd,(struct sockaddr *)&clientaddr, client_len)<0)
+	if(connect(client_sockfd,(struct sockaddr *)&clientaddr, client_len)<0)
 	{
 		perror("connect error: ");
 		exit(0);
