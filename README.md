@@ -29,9 +29,9 @@
 
 - Oracle VM VirtualBox, Fedora Linux 설치 후 실행
 - 터미널 접속해서 디렉토리 생성(tcp_client, tcp_server, udp_client, udp_server, tmp, mysocket)
-- vi 편집기를 이용하여 tcp & udp 클라이언트 및 서버 부분 코딩
-- 저장 후 종료하고 gcc 컴파일러를 이용하여 컴파일
-- gcc 명령어를 이용하여 실행파일 생성 후 파일 실행
+- vi 편집기를 실행하여 tcp & udp 클라이언트 및 서버 부분 코딩
+- 저장 후 종료하고 gcc 컴파일러를 이용하여 컴파일 후 실행파일 생성
+- 파일 실행
   
 ## 개발 환경
 
