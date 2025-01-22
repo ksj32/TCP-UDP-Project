@@ -31,7 +31,7 @@ C언어를 활용한 소켓통신 프로젝트.
 
 ## 개발 환경
 
-Fedora Linux
+Fedora Linux, DEV-C++
 
 ## 정보
 
